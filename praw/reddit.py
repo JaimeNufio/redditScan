@@ -18,11 +18,11 @@ def connect():
 
 def getSubmissionsFromSubreddit(sub):
     # Get the top post in a subreddit
-    subreddit = reddit.subreddit(sub)
-    top_post = subreddit.top(limit=10)
+    subredditPosts = reddit.subreddit(sub).top(limit=1000)
+    # for i in range(1000):
 
     # Print the title of the top post
-    for post in top_post:
+    for post in subredditPosts:
         postGot = vars(post)
         obj = {
             'created':postGot['created'],
@@ -38,10 +38,15 @@ def getSubmissionsFromSubreddit(sub):
             'permalink':postGot['permalink']
         }
 
-        pprint.pprint(vars(post))
+        pprint.pprint((obj))
 
-def getCommentsOnSubmission():
-    pass
+        getCommentsOnSubmission(post)
+
+def getCommentsOnSubmission(submission):
+    submission.comments.replace_more(limit=None)
+    print('found {} comments!'.format( len(submission.comments.list()) ))
+    # for comment in submission.comments.list():
+    #     print("found some comments: ",len(comment.body))
 
 reddit = connect()
 getSubmissionsFromSubreddit('njtech')
