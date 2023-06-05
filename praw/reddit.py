@@ -2,7 +2,7 @@ import praw,json,pprint
 
 
 def connect():
-    keys = open('praw/keys.json')
+    keys = open('keys.json')
     auth = json.load(keys)
     keys.close()
 
@@ -23,7 +23,18 @@ def getSubPosts(reddit):
 
     # Print the title of the top post
     for post in top_post:
-        pprint.pprint(vars(post))
+        # pprint.pprint(vars(post)['created','id','num_comments','score','title','url'])
+        postGot = vars(post)
+        obj = {
+            'created':postGot['created'],
+            'id':postGot['id'],
+            'num_comments':postGot['num_comments'],
+            'score':postGot['score'],
+            'title':postGot['title'],
+            'url':postGot['url']
+        }
+
+        print(obj)
 
 
 reddit = connect()

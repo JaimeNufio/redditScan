@@ -1,28 +1,38 @@
 import psycopg2
 import json
 
-keys = open('db/keys.json')
-auth = json.load(keys)
-keys.close()
+class connectionManager: 
 
-conn = psycopg2.connect(host=auth['host'], 
-    port=auth['port'], 
-    dbname=auth['dbname'],
-    user=auth['user'], 
-    password=auth['password'])
+    conn = None
+    cur = None
 
-cur = conn.cursor()
+    def createConnection(self):
 
-if conn.status == psycopg2.extensions.STATUS_READY:
-    print("Connection is ready!")
-else:
-    print("Connection is not ready!")
+        keys = open('keys.json')
+        auth = json.load(keys)
+        keys.close()
 
-cur.execute("DROP TABLE submissions")
-conn.commit()
+        self.conn = psycopg2.connect(host=auth['host'], 
+            port=auth['port'], 
+            dbname=auth['dbname'],
+            user=auth['user'], 
+            password=auth['password'])
 
-cur.execute("CREATE TABLE submissions (id serial PRIMARY KEY, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);")
-conn.commit()
+        self.cur = self.conn.cursor()
 
-cur.execute("DROP TABLE submissions")
-conn.commit()
+        if self.conn.status == psycopg2.extensions.STATUS_READY:
+            print("Connection is ready!")
+        else:
+            print("Connection is not ready!")
+            return
+
+    def __str__(self):
+        return 'test'
+
+    def execute (self,command):
+        print("Executing:", command)
+        self.cur.execute(command)
+        self.conn.commit()
+
+    def __init__(self):
+        self.createConnection()
