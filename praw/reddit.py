@@ -16,14 +16,13 @@ def connect():
 
     return reddit
 
-def getSubPosts(reddit):
+def getSubmissionsFromSubreddit(sub):
     # Get the top post in a subreddit
-    subreddit = reddit.subreddit('njtech')
-    top_post = subreddit.top(limit=1)
+    subreddit = reddit.subreddit(sub)
+    top_post = subreddit.top(limit=10)
 
     # Print the title of the top post
     for post in top_post:
-        # pprint.pprint(vars(post)['created','id','num_comments','score','title','url'])
         postGot = vars(post)
         obj = {
             'created':postGot['created'],
@@ -31,11 +30,18 @@ def getSubPosts(reddit):
             'num_comments':postGot['num_comments'],
             'score':postGot['score'],
             'title':postGot['title'],
-            'url':postGot['url']
+            'url':postGot['url'],
+            'selftext':postGot['selftext'],
+            'over_18':postGot['over_18'],
+            'author':str(postGot['author']),
+            'subreddit':str(postGot['subreddit']),
+            'permalink':postGot['permalink']
         }
 
-        print(obj)
+        pprint.pprint(vars(post))
 
+def getCommentsOnSubmission():
+    pass
 
 reddit = connect()
-getSubPosts(reddit)
+getSubmissionsFromSubreddit('njtech')

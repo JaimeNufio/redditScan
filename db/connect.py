@@ -34,5 +34,13 @@ class connectionManager:
         self.cur.execute(command)
         self.conn.commit()
 
+    def createTable(self,table):
+        try:
+            with open('tables/{}.sql'.format(table),'r') as f:
+                self.execute('drop table if exists {}'.format(table))
+                self.execute(f.read())
+        except Exception as e:
+            print("Error:",e)
+
     def __init__(self):
         self.createConnection()
