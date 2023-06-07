@@ -1,15 +1,3 @@
--- 'created':postGot['created'],
--- 'id':postGot['id'],
--- 'num_comments':postGot['num_comments'],
--- 'score':postGot['score'],
--- 'title':postGot['title'],
--- 'url':postGot['url'],
--- 'selftext':postGot['selftext'],
--- 'over_18':postGot['over_18'],
--- 'author':str(postGot['author']),
--- 'subreddit':str(postGot['subreddit']),
--- 'permalink':postGot['permalink']
-
 CREATE TABLE submisisons (
     created TIMESTAMP WITHOUT TIME ZONE,
     id VARCHAR(32) NOT NULL, 
