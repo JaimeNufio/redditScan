@@ -1,0 +1,16 @@
+{    
+    "reddit":{
+        "client_id":"",
+        "client_secret":"",
+        "user_agent":"",
+        "username":""
+    },
+
+    "db":{
+        "host":"", 
+        "port":"", 
+        "dbname":"",
+        "user":"", 
+        "password":""
+    }
+}

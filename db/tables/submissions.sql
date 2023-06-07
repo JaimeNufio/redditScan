@@ -14,7 +14,7 @@ CREATE TABLE submisisons (
     created TIMESTAMP WITHOUT TIME ZONE,
     id VARCHAR(32) NOT NULL, 
     num_comments VARCHAR(32) NOT NULL, 
-    score VARCHAR(32) NOT NULL, 
+    score INT, 
     title VARCHAR(300) NOT NULL,
     url VARCHAR(500),
     selftext VARCHAR(40000),

@@ -1,16 +1,13 @@
 import psycopg2
-import json
+import collections
+from pprint import pprint
 
 class connectionManager: 
 
     conn = None
     cur = None
 
-    def createConnection(self):
-
-        keys = open('keys.json')
-        auth = json.load(keys)
-        keys.close()
+    def connect(self,auth):
 
         self.conn = psycopg2.connect(host=auth['host'], 
             port=auth['port'], 
@@ -26,9 +23,6 @@ class connectionManager:
             print("Connection is not ready!")
             return
 
-    def __str__(self):
-        return 'test'
-
     def execute (self,command):
         print("Executing:", command)
         self.cur.execute(command)
@@ -36,11 +30,23 @@ class connectionManager:
 
     def createTable(self,table):
         try:
-            with open('tables/{}.sql'.format(table),'r') as f:
-                self.execute('drop table if exists {}'.format(table))
+            with open('db/tables/{}.sql'.format(table),'r') as f:
+                # self.execute('{}'.format(table))
                 self.execute(f.read())
         except Exception as e:
             print("Error:",e)
 
-    def __init__(self):
-        self.createConnection()
+    def insertMany(self,objs,table):
+
+        batch = []
+        for obj in objs:
+            ordered_dict = collections.OrderedDict.fromkeys(obj, None)
+            ordered_dict.update(obj.items())
+            batch.append(ordered_dict)
+        
+
+        pprint(batch)
+
+
+    def __init__(self,auth):
+        self.connect(auth)
