@@ -16,7 +16,7 @@ class redditManager:
         )
 
 
-    def getSubmissionsFromSubreddit(self,sub):
+    def getSubmissionsFromSubreddit(self,sub,insertFunc):
         # Get the top post in a subreddit
         subredditPosts = self.reddit.subreddit(sub).new(limit=1000)
         # for i in range(1000):
@@ -24,7 +24,7 @@ class redditManager:
         # Print the title of the top post
         for post in subredditPosts:
             obj = {
-                'created':post.created,
+                'created':int(post.created),
                 'id':post.id,
                 'num_comments':post.num_comments,
                 'score':post.score,
@@ -38,20 +38,22 @@ class redditManager:
             }
 
             # pprint.pprint((obj))
-            print("Post \"{}\" by /u/{} in /r/{}".format(obj['title'],obj['author'],obj['subreddit']))
+            # print("Post \"{}\" by /u/{} in /r/{}".format(obj['title'],obj['author'],obj['subreddit']))
+            
+            insertFunc([obj],'submissions')
+            self.getCommentsOnSubmission(post,insertFunc)
+        
 
-            self.getCommentsOnSubmission(post)
-
-    def getCommentsOnSubmission(self,submission):
+    def getCommentsOnSubmission(self,submission,insertFunc):
 
         submission.comments.replace_more(limit=None)
         print('found {} comments!'.format( len(submission.comments.list()) ))
 
-        for comment in submission.comments.list():
-            # print("found some comments: ",len(comment.body))
+        batch = []
 
+        for comment in submission.comments.list():
             obj = {
-                'created':comment.created,
+                'created':int(comment.created),
                 'id':comment.id,
                 'parent_id':comment.parent_id,
                 'depth':comment.depth,
@@ -65,8 +67,9 @@ class redditManager:
                 'is_submitter':comment.is_submitter
             }
 
+            batch.append(obj)
 
-            pprint.pprint(obj)
+        insertFunc(batch,'comments')
 
     def __init__(self,auth):
         self.connect(auth)

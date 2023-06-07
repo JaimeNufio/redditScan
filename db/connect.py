@@ -28,6 +28,17 @@ class connectionManager:
         self.cur.execute(command)
         self.conn.commit()
 
+    def executeMany (self,sql,values):
+        try:
+            print("Executing:", sql)
+            print("values:",values,len(values[0]))
+            self.cur.executemany(sql,values)
+            self.conn.commit()
+        except Exception as e:
+            print('Error:',e)
+            self.cur.execute('ROLLBACK')
+
+
     def createTable(self,table):
         try:
             with open('db/tables/{}.sql'.format(table),'r') as f:
@@ -36,16 +47,38 @@ class connectionManager:
         except Exception as e:
             print("Error:",e)
 
-    def insertMany(self,objs,table):
-
+    def insertMany(self,objs,table=None):
+        print("INSERT MANY INTO TABLE:",table)
+        keys = None 
         batch = []
         for obj in objs:
             ordered_dict = collections.OrderedDict.fromkeys(obj, None)
             ordered_dict.update(obj.items())
-            batch.append(ordered_dict)
-        
 
-        pprint(batch)
+            # batch.append(ordered_dict)
+            batch.append(tuple(ordered_dict.values()))
+
+            if not keys:
+                keys = ','.join([str(x) for x in tuple(ordered_dict.keys())])
+            # print(tuple(ordered_dict.keys()))
+            # print(tuple(ordered_dict.values()))
+
+        query = ''
+        if table == 'comments':
+            query = """
+                INSERT INTO comments({})
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """.format(keys)
+
+        if table == 'submissions':
+            query = """
+                INSERT INTO submissions({})
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """.format(keys)
+
+        if (query):
+            print('have query',query)
+            self.executeMany(query,batch)
 
 
     def __init__(self,auth):

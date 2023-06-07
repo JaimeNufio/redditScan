@@ -1,6 +1,7 @@
 import json
 from db import connect
 from redditapi_praw import reddit
+from pprint import pprint
 
 keys = open('keys.json')
 auth = json.load(keys)
@@ -11,4 +12,4 @@ db.createTable('comments')
 db.createTable('submissions')
 
 r = reddit.redditManager(auth['reddit'])
-r.getSubmissionsFromSubreddit('njtech')
+r.getSubmissionsFromSubreddit('njtech',db.insertMany)
